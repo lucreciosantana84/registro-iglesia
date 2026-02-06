@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Registro Iglesia — Miembros & Evangelizados</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#111827">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">⛪</div>
+      <div>
+        <div class="title">Registro Iglesia</div>
+        <div class="subtitle">Miembros & Evangelizados • Offline</div>
+      </div>
+    </div>
+    <div class="actions">
+      <button id="btnExport" class="btn">Exportar</button>
+      <label class="btn btn-ghost">
+        Importar
+        <input id="fileImport" type="file" accept="application/json" hidden>
+      </label>
+      <button id="btnAbout" class="btn btn-ghost">Ayuda</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="tabs">
+      <button class="tab active" data-tab="miembros">Miembros</button>
+      <button class="tab" data-tab="evangelizados">Evangelizados</button>
+    </section>
+
+    <section class="panel active" id="panel-miembros">
+      <div class="toolbar">
+        <input id="qMiembros" class="input" placeholder="Buscar por nombre o teléfono…" />
+        <select id="fSede" class="input">
+          <option value="">Todas las sedes</option>
+          <option>Vicente López</option>
+          <option>Boulogne</option>
+          <option>Don Torcuato</option>
+          <option>San Fernando</option>
+          <option>Tigre</option>
+          <option>Virreyes</option>
+          <option>Otra</option>
+        </select>
+        <button id="btnNewMiembro" class="btn btn-primary">+ Nuevo miembro</button>
+      </div>
+      <div id="listMiembros" class="list"></div>
+    </section>
+
+    <section class="panel" id="panel-evangelizados">
+      <div class="toolbar">
+        <input id="qEvan" class="input" placeholder="Buscar por nombre o teléfono…" />
+        <select id="fEstado" class="input">
+          <option value="">Todos los estados</option>
+          <option>Nuevo</option>
+          <option>En acompañamiento</option>
+          <option>Asistió</option>
+          <option>Se hizo miembro</option>
+          <option>Perdido</option>
+        </select>
+        <button id="btnNewEvan" class="btn btn-primary">+ Nuevo evangelizado</button>
+      </div>
+      <div id="listEvan" class="list"></div>
+    </section>
+  </main>
+
+  <!-- Modal: Form -->
+  <dialog id="dlgForm" class="dialog">
+    <form method="dialog" id="formEntity" class="form">
+      <div class="form-head">
+        <div>
+          <h2 id="formTitle">Nuevo</h2>
+          <p id="formHint" class="muted">Completá los campos principales. La foto es opcional.</p>
+        </div>
+        <button class="iconbtn" value="cancel" aria-label="Cerrar">✕</button>
+      </div>
+
+      <input type="hidden" id="entityType">
+      <input type="hidden" id="entityId">
+
+      <div class="grid">
+        <label>
+          Nombre completo*
+          <input id="NombreCompleto" class="input" required>
+        </label>
+        <label>
+          Teléfono*
+          <input id="Telefono" class="input" required>
+        </label>
+
+        <!-- Miembros -->
+        <div class="only-miembros">
+          <label>DNI/Documento
+            <input id="DNI" class="input">
+          </label>
+          <label>Fecha de nacimiento
+            <input id="FechaNacimiento" type="date" class="input">
+          </label>
+          <label>WhatsApp
+            <input id="WhatsApp" class="input">
+          </label>
+          <label>Dirección
+            <input id="Direccion" class="input">
+          </label>
+          <label>Barrio
+            <input id="Barrio" class="input">
+          </label>
+          <label>Ciudad
+            <input id="Ciudad" class="input">
+          </label>
+          <label>Estado civil
+            <select id="EstadoCivil" class="input">
+              <option value=""></option>
+              <option>Soltero</option>
+              <option>Casado</option>
+              <option>Unión convivencial</option>
+              <option>Separado</option>
+              <option>Viudo</option>
+            </select>
+          </label>
+          <label>Fecha de llegada
+            <input id="FechaLlegada" type="date" class="input">
+          </label>
+          <label>Sede/Iglesia*
+            <select id="SedeIglesia" class="input" required>
+              <option>Vicente López</option>
+              <option>Boulogne</option>
+              <option>Don Torcuato</option>
+              <option>San Fernando</option>
+              <option>Tigre</option>
+              <option>Virreyes</option>
+              <option>Otra</option>
+            </select>
+          </label>
+          <label>Responsable*
+            <input id="Responsable" class="input" required placeholder="Obrero/Pastor">
+          </label>
+          <label class="row">
+            Bautizado
+            <input id="Bautizado" type="checkbox">
+          </label>
+          <label>Fecha de bautismo
+            <input id="FechaBautismo" type="date" class="input">
+          </label>
+          <label class="row">
+            Activo
+            <input id="Activo" type="checkbox" checked>
+          </label>
+        </div>
+
+        <!-- Evangelizados -->
+        <div class="only-evangelizados">
+          <label>Fecha de evangelización*
+            <input id="FechaEvangelizacion" type="date" class="input" required>
+          </label>
+          <label>Lugar del contacto
+            <select id="LugarContacto" class="input">
+              <option value=""></option>
+              <option>Calle</option>
+              <option>Casa</option>
+              <option>Hospital</option>
+              <option>Trabajo</option>
+              <option>Otro</option>
+            </select>
+          </label>
+          <label>Motivo del pedido
+            <textarea id="MotivoPedido" class="input" rows="3"></textarea>
+          </label>
+          <label>Quién evangelizó*
+            <input id="Evangelizador" class="input" required placeholder="Nombre del obrero/equipo">
+          </label>
+          <label>Invitado a
+            <select id="InvitadoA" class="input">
+              <option value=""></option>
+              <option>Fe</option>
+              <option>Liberación</option>
+              <option>Prosperidad</option>
+              <option>Familia</option>
+              <option>Jóvenes</option>
+              <option>Otra</option>
+            </select>
+          </label>
+          <label class="row">
+            Asistió
+            <input id="Asistio" type="checkbox">
+          </label>
+          <label>Fecha de asistencia
+            <input id="FechaAsistencia" type="date" class="input">
+          </label>
+          <label>Estado de seguimiento*
+            <select id="EstadoSeguimiento" class="input" required>
+              <option>Nuevo</option>
+              <option>En acompañamiento</option>
+              <option>Asistió</option>
+              <option>Se hizo miembro</option>
+              <option>Perdido</option>
+            </select>
+          </label>
+          <label>Próximo contacto
+            <input id="ProximoContacto" type="date" class="input">
+          </label>
+          <label>Observaciones
+            <textarea id="ObservacionesEvan" class="input" rows="3"></textarea>
+          </label>
+          <label>ID miembro relacionado
+            <input id="MiembroRelacionadoID" class="input" inputmode="numeric" placeholder="(opcional)">
+          </label>
+        </div>
+
+        <label class="wide">
+          Observaciones
+          <textarea id="Observaciones" class="input" rows="3"></textarea>
+        </label>
+
+        <label class="wide">
+          Foto (opcional)
+          <input id="Foto" type="file" accept="image/*" class="input">
+          <small class="muted">Se guarda dentro del navegador (offline). Para compartir entre celulares, usá Exportar/Importar.</small>
+        </label>
+      </div>
+
+      <div class="form-actions">
+        <button id="btnDelete" class="btn btn-danger" type="button" style="display:none">Eliminar</button>
+        <div class="spacer"></div>
+        <button class="btn" value="cancel">Cancelar</button>
+        <button id="btnSave" class="btn btn-primary" type="submit">Guardar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Modal: About -->
+  <dialog id="dlgAbout" class="dialog">
+    <form method="dialog" class="about">
+      <div class="form-head">
+        <div>
+          <h2>Cómo usar</h2>
+          <p class="muted">Funciona sin internet. Tus datos quedan en este dispositivo.</p>
+        </div>
+        <button class="iconbtn" value="cancel" aria-label="Cerrar">✕</button>
+      </div>
+      <ol>
+        <li>Entrá a <b>Miembros</b> o <b>Evangelizados</b> y tocá <b>Nuevo</b>.</li>
+        <li>Cargá los datos y, si querés, agregá una <b>foto</b>.</li>
+        <li>Para pasar datos a otro celular/PC, usá <b>Exportar</b> (genera un .json) y en el otro dispositivo usá <b>Importar</b>.</li>
+        <li>Recomendación: exportá una vez por día como backup.</li>
+      </ol>
+      <p class="muted">Versión local (offline). Si querés multiusuario con permisos, se migra a Power Apps + SharePoint.</p>
+      <div class="form-actions">
+        <button class="btn btn-primary" value="cancel">Entendido</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').catch(()=>{});
+    }
+  </script>
+</body>
+</html>
