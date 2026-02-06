@@ -9,7 +9,21 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <header class="topbar">
+<header class="topbar">
+  <div class="brand">
+    <img src="assets/logo-universal.png" alt="Universal" class="logo-img">
+  </div>
+
+  <div class="actions">
+    <button id="btnExport" class="btn">Exportar</button>
+    <label class="btn btn-outline">
+      Importar
+      <input id="fileImport" type="file" accept="application/json" hidden>
+    </label>
+    <button id="btnAbout" class="btn btn-outline">Ayuda</button>
+  </div>
+</header>
+
     <div class="brand">
       <div class="logo">⛪</div>
       <div>
